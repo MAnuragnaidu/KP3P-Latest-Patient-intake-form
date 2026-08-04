@@ -1,3 +1,5 @@
+import { getAdminApiConfigError, getAdminApiUrl } from '@/lib/adminApiUrl';
+
 export type DuplicateCheckField = 'email' | 'contactPhone';
 
 export type DuplicateCheckResult =
@@ -8,7 +10,10 @@ export async function checkDuplicatePatient(
   email: string,
   contactPhone: string,
 ): Promise<DuplicateCheckResult> {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://admin-xi-three-76.vercel.app';
+  const apiUrl = getAdminApiUrl();
+  if (!apiUrl) {
+    return { ok: false, error: getAdminApiConfigError() };
+  }
 
   try {
     const res = await fetch(`${apiUrl}/api/patients/check-duplicate`, {

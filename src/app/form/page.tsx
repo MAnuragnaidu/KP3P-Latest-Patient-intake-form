@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FormData, initialFormData, STEP_META, validateStep } from '@/lib/formSchema';
 import { checkDuplicatePatient } from '@/lib/checkDuplicatePatient';
+import { getAdminApiConfigError, getAdminApiUrl } from '@/lib/adminApiUrl';
 import { INTAKE_SUBMITTED_KEY, PATIENT_ENTRY_KEY, type PatientEntry } from '@/lib/intakeSession';
 import Step1PatientInfo from '@/components/steps/Step1PatientInfo';
 import Step2DiseaseChar from '@/components/steps/Step2DiseaseChar';
@@ -138,7 +139,13 @@ export default function FormPage() {
     setErrors({});
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://admin-xi-three-76.vercel.app';
+      const apiUrl = getAdminApiUrl();
+      if (!apiUrl) {
+        setErrors({ submit: getAdminApiConfigError() });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
       const res = await fetch(`${apiUrl}/api/patients`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

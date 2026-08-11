@@ -29,8 +29,11 @@ See [`.env.example`](.env.example).
 | Variable | Purpose |
 |----------|---------|
 | `NEXT_PUBLIC_API_URL` | Base URL of the admin app (e.g. `http://localhost:3000`) |
+| `TWILIO_ACCOUNT_SID` | Twilio Account SID (server-only; WhatsApp OTP) |
+| `TWILIO_AUTH_TOKEN` | Twilio Auth Token (server-only) |
+| `TWILIO_VERIFY_SERVICE_SID` | Twilio Verify Service SID (`VA...`) |
 
-Intake calls admin endpoints such as `POST ${NEXT_PUBLIC_API_URL}/api/patients` and drive upload routes when configured on the admin side.
+Intake calls admin endpoints such as `POST ${NEXT_PUBLIC_API_URL}/api/patients`. WhatsApp OTP uses local routes `POST /api/otp/send` and `POST /api/otp/verify` (Twilio Verify, channel `whatsapp`).
 
 ## Scripts
 
@@ -58,6 +61,13 @@ Manual deploy from repo root:
 ```bash
 gcloud builds submit --config=Patient-intake-form/cloudbuild.yaml \
   --substitutions=_PROJECT_ID=kp3p-prod,_ADMIN_PUBLIC_URL=https://www.gastroai.in
+```
+
+After deploy, bind Twilio secrets on Cloud Run (if not done via `setup-kp3p-prod.sh`):
+
+```bash
+gcloud run services update kp3p-intake --region=asia-south1 --project=kp3p-prod \
+  --set-secrets=TWILIO_ACCOUNT_SID=TWILIO_ACCOUNT_SID:latest,TWILIO_AUTH_TOKEN=TWILIO_AUTH_TOKEN:latest,TWILIO_VERIFY_SERVICE_SID=TWILIO_VERIFY_SERVICE_SID:latest
 ```
 
 ## Project layout (high level)

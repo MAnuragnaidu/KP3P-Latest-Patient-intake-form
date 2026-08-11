@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { FormData, initialFormData, STEP_META, validateStep } from '@/lib/formSchema';
 import { checkDuplicatePatient } from '@/lib/checkDuplicatePatient';
 import { getAdminApiConfigError, getAdminApiUrl } from '@/lib/adminApiUrl';
-import { INTAKE_SUBMITTED_KEY, PATIENT_ENTRY_KEY, type PatientEntry } from '@/lib/intakeSession';
+import { INTAKE_SUBMITTED_KEY, PATIENT_ENTRY_KEY, type IntakeConsent, type PatientEntry } from '@/lib/intakeSession';
 import Step1PatientInfo from '@/components/steps/Step1PatientInfo';
 import Step2DiseaseChar from '@/components/steps/Step2DiseaseChar';
 
@@ -24,6 +24,7 @@ export default function FormPage() {
   const [isCheckingDuplicate, setIsCheckingDuplicate] = useState(false);
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [sessionReady, setSessionReady] = useState(false);
+  const [intakeConsent, setIntakeConsent] = useState<IntakeConsent | null>(null);
 
   const currentMeta = STEP_META[step - 1];
 
@@ -43,14 +44,28 @@ export default function FormPage() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved) as Partial<PatientEntry>;
+        if (!parsed.phoneVerifiedAt?.trim()) {
+          router.replace('/');
+          return;
+        }
+        const sessionPhone = parsed.contactPhone?.trim() || '';
+        if (!sessionPhone) {
+          router.replace('/');
+          return;
+        }
         setData(prev => ({
           ...prev,
           name: parsed.name || prev.name,
           email: parsed.email || prev.email,
-          contactPhone: parsed.contactPhone || prev.contactPhone,
+          contactPhone: sessionPhone,
         }));
+        if (parsed.consent) {
+          setIntakeConsent(parsed.consent);
+        }
       } catch (err) {
         console.error('Failed to parse patient_entry', err);
+        router.replace('/');
+        return;
       }
     }
     setSessionReady(true);
@@ -146,10 +161,16 @@ export default function FormPage() {
         return;
       }
 
+      if (!intakeConsent) {
+        setErrors({ submit: 'Consent is required. Please return to the welcome page and accept all terms.' });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
       const res = await fetch(`${apiUrl}/api/patients`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, consent: intakeConsent }),
       });
 
       // Safely parse JSON — avoid crashing on HTML 404 pages

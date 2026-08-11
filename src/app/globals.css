@@ -560,3 +560,202 @@ input[type=file].fi-file-native:disabled {
   .step-title { color: #0f172a; }
   select.fi option { background: #ffffff; color: #0f172a; }
 }
+
+/* ─── Consent checkboxes (landing) ──────────────────────── */
+.consent-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px;
+}
+.consent-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+.consent-row:hover { border-color: rgba(8, 145, 178, 0.35); }
+.consent-row-err { border-color: var(--error); background: var(--error-bg); }
+.consent-row input[type="checkbox"] {
+  accent-color: var(--primary);
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  cursor: pointer;
+}
+.consent-label { flex: 1; }
+.consent-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: var(--primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.consent-link:hover { color: #0e7490; }
+.consent-field-error { display: block; margin-top: -6px; margin-left: 2px; font-size: 12px; }
+
+/* ─── Legal document modal ──────────────────────────────── */
+.legal-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.legal-modal-panel {
+  width: 100%;
+  max-width: 560px;
+  max-height: min(85vh, 720px);
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.legal-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.legal-modal-title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+}
+.legal-modal-version {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.legal-modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0 4px;
+}
+.legal-modal-close:hover { color: var(--text); }
+.legal-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+}
+.legal-modal-paragraph {
+  margin: 0 0 14px;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--text-dim);
+  white-space: pre-wrap;
+}
+.legal-modal-paragraph:last-child { margin-bottom: 0; }
+.legal-modal-footer {
+  padding: 12px 20px 18px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+}
+.legal-modal-done {
+  width: auto;
+  min-width: 100px;
+  padding: 10px 20px;
+}
+
+/* ─── WhatsApp OTP (landing) ────────────────────────────── */
+.otp-panel {
+  padding: 14px 16px;
+  background: rgba(8, 145, 178, 0.06);
+  border: 1px solid rgba(8, 145, 178, 0.22);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.otp-helper {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+.otp-boxes {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: nowrap;
+}
+.otp-boxes-err .otp-box {
+  border-color: var(--error);
+  background: var(--error-bg);
+}
+.otp-box {
+  width: 42px;
+  height: 48px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text);
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.otp-box:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+.otp-box:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.otp-input {
+  letter-spacing: 0.35em;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  max-width: 200px;
+}
+.otp-resend-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.otp-resend-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 13px;
+  color: var(--primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.otp-resend-btn:disabled {
+  color: var(--text-muted);
+  cursor: not-allowed;
+  text-decoration: none;
+}
+.otp-resend-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+}
